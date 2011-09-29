@@ -14,7 +14,9 @@ def production():
     env.user = 'ubuntu'
     env.key_filename  = '/Users/phil.hawksworth/.ssh/philhawksworth-aws.pem'
     env.apache = 'jqwiki.com'
-    env.release_path = "/var/releases/jqwiki.com"
+    env.release_path = "/var/releases/jQwiki.com"
+    env.release_root = "/var/releases/"
+    env.git_remote = "git://github.com/philhawksworth/jQwiki.com.git"
 
 
 def deploy():
@@ -24,13 +26,12 @@ def deploy():
 def initenv():
     '''Initialise the environment on the server'''
     make_release_location()
-    create_web_root()    
-    enable_site()
+    create_web_root()
 
 
 def make_release_location():
     '''Create the release code location on the server'''
-    command = 'mkdir %(release_path)s'
+    command = 'cd %(release_root)s && git clone %(git_remote)s'
     sudo(command % env)
     command = 'chown -R ubuntu:ubuntu %(release_path)s'
     sudo(command % env)
@@ -38,9 +39,7 @@ def make_release_location():
     
 def create_web_root():
     '''Create the web root location'''
-    command = 'mkdir %(path)s'
-    sudo(command % env)
-    command = 'chown -R ubuntu:ubuntu %(path)s'
+    command = 'mkdir %(path)s && chown -R ubuntu:ubuntu %(path)s'
     sudo(command % env)
 
 
